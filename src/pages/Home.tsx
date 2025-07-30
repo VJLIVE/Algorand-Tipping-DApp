@@ -1,4 +1,5 @@
 import React from "react";
+import Navbar from "../components/Navbar";
 
 const dummyPosts = [
   {
@@ -18,13 +19,8 @@ const dummyPosts = [
 const Home: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Top bar */}
-      <header className="flex justify-between items-center p-4 shadow bg-white">
-        <h1 className="text-2xl font-bold text-blue-600">NFT Tipping App</h1>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg">
-          Connect Wallet
-        </button>
-      </header>
+      {/* Navbar */}
+      <Navbar onConnect={() => alert("Wallet connect coming soon!")} />
 
       {/* Create Post Button */}
       <div className="p-4">
