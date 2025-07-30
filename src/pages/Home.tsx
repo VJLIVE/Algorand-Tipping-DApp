@@ -20,7 +20,7 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
-      <Navbar onConnect={() => alert("Wallet connect coming soon!")} />
+      <Navbar />
 
       {/* Create Post Button */}
       <div className="p-4">

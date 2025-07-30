@@ -1,7 +1,12 @@
 import Home from "./pages/Home";
+import { WalletProvider } from "./context/WalletContext";
 
 function App() {
-  return <Home />;
+  return (
+    <WalletProvider>
+      <Home />
+    </WalletProvider>
+  );
 }
 
 export default App;
