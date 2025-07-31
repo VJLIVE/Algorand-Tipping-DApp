@@ -1,10 +1,15 @@
-import Home from "./pages/Home";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { WalletProvider } from "./context/WalletContext";
+import Home from "./pages/Home";
 
 function App() {
   return (
     <WalletProvider>
-      <Home />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </BrowserRouter>
     </WalletProvider>
   );
 }
