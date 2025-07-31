@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchFundraisers } from "../utils/firestore";
 import type { FundraiserPost } from "../utils/firestore";
+import { Link } from "react-router-dom";
 
 const FundraiserList: React.FC = () => {
   const [fundraisers, setFundraisers] = useState<FundraiserPost[]>([]);
@@ -15,13 +16,21 @@ const FundraiserList: React.FC = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
-      {fundraisers.map(f => (
-        <div key={f.id} className="bg-white p-4 rounded-lg shadow">
-          <img src={f.image} alt={f.title} className="w-full h-40 object-cover rounded" />
+      {fundraisers.map((f) => (
+        <Link
+          key={f.id}
+          to={`/fundraiser/${f.id}`}
+          className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition"
+        >
+          <img
+            src={f.image}
+            alt={f.title}
+            className="w-full h-40 object-cover rounded"
+          />
           <h3 className="text-lg font-bold mt-2">{f.title}</h3>
-          <p className="text-gray-600">{f.description}</p>
+          <p className="text-gray-600 line-clamp-2">{f.description}</p>
           <p className="text-xs text-gray-500 mt-1">By {f.creator}</p>
-        </div>
+        </Link>
       ))}
     </div>
   );
