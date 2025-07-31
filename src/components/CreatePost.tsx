@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 import { uploadToPinata } from "../utils/pinata";
-import { createFundraiserTxn } from "../utils/algorand";
 import { useWallet } from "../context/WalletContext";
-
-type Post = {
-  title: string;
-  description: string;
-  image: string;
-  creator: string;
-};
+import { createFundraiser } from "../utils/firestore";
 
 const CreatePost: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [title, setTitle] = useState("");
@@ -16,7 +9,7 @@ const CreatePost: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const { account: creator, peraWallet } = useWallet();
+  const { account: creator } = useWallet();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,22 +20,16 @@ const CreatePost: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
     try {
       setLoading(true);
-
-      // Upload image to IPFS
       const ipfsUrl = await uploadToPinata(file);
 
-      // Metadata
-      const metadata: Post = {
+      await createFundraiser({
         title,
         description,
         image: ipfsUrl,
         creator,
-      };
+      });
 
-      // Send txn
-      const txId = await createFundraiserTxn(peraWallet, creator, metadata);
-      alert(`Fundraiser created! TxID: ${txId}`);
-
+      alert("Fundraiser created successfully!");
       onClose();
     } catch (err) {
       console.error(err);

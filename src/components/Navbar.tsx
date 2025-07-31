@@ -1,29 +1,38 @@
 import React from "react";
 import { useWallet } from "../context/WalletContext";
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC<{ onCreateClick: () => void }> = ({ onCreateClick }) => {
   const { account, connectWallet, disconnectWallet } = useWallet();
 
   return (
-    <header className="flex justify-between items-center p-4 shadow bg-white">
-      <h1 className="text-2xl font-bold text-blue-600">NFT Tipping App</h1>
+    <nav className="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+      <h1 className="text-xl font-bold text-green-600">🌱 Fundraiser DApp</h1>
 
-      {account ? (
+      <div className="flex items-center gap-4">
         <button
-          onClick={disconnectWallet}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg"
+          onClick={onCreateClick}
+          className="bg-green-600 text-white px-4 py-2 rounded-lg"
         >
-          Disconnect ({account.slice(0, 6)}...{account.slice(-4)})
+          + Create
         </button>
-      ) : (
-        <button
-          onClick={connectWallet}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-        >
-          Connect Wallet
-        </button>
-      )}
-    </header>
+
+        {account ? (
+          <button
+            onClick={disconnectWallet}
+            className="bg-gray-300 px-4 py-2 rounded-lg"
+          >
+            {account.slice(0, 6)}...{account.slice(-4)}
+          </button>
+        ) : (
+          <button
+            onClick={connectWallet}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+          >
+            Connect Wallet
+          </button>
+        )}
+      </div>
+    </nav>
   );
 };
 
