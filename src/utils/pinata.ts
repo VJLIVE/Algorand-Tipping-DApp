@@ -1,4 +1,4 @@
-export const uploadToPinata = async (file: File) => {
+export const uploadToPinata = async (file: File): Promise<string> => {
   const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
 
   const formData = new FormData();
@@ -15,13 +15,14 @@ export const uploadToPinata = async (file: File) => {
 
     const data = await res.json();
 
-    if (res.ok) {
+    if (res.ok && data.IpfsHash) {
       return `https://gateway.pinata.cloud/ipfs/${data.IpfsHash}`;
     } else {
-      throw new Error(data.error || "Pinata upload failed");
+      console.error("Pinata Error Response:", data);
+      throw new Error(JSON.stringify(data));
     }
   } catch (err) {
     console.error("Pinata Upload Error:", err);
-    throw err;
+    throw err; // ensures it never returns undefined
   }
 };
