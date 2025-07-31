@@ -11,61 +11,74 @@ const Navbar: React.FC<{ onCreateClick: () => void }> = ({ onCreateClick }) => {
 
   return (
     <>
+      {/* Top Navbar */}
       <motion.nav
         initial={{ y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="backdrop-blur-md bg-black/80 shadow-xl px-6 py-4 flex items-center justify-between fixed top-0 left-0 right-0 z-50 border-b border-gray-700"
+        className="backdrop-blur-lg bg-gradient-to-r from-black/80 via-gray-900/80 to-black/80 border-b border-green-600/30 shadow-xl px-6 py-4 flex items-center justify-between fixed top-0 left-0 right-0 z-50"
       >
-        {/* Brand */}
+        {/* Brand Logo */}
         <Link
           to="/"
-          className="flex items-center gap-2 text-2xl font-extrabold tracking-tight text-green-400 hover:opacity-90 transition"
+          className="flex items-center gap-2 text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300 hover:opacity-90 transition"
         >
-          <Sprout size={28} strokeWidth={2.5} />
+          <motion.div
+            initial={{ rotate: -15 }}
+            animate={{ rotate: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            <Sprout size={30} strokeWidth={2.5} />
+          </motion.div>
           Fundraiser DApp
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex space-x-4 items-center">
+        <div className="hidden md:flex space-x-6 items-center">
           <Link
             to="/"
-            className={`text-sm font-medium ${
-              location.pathname === "/" ? "text-green-400" : "text-gray-200"
-            } hover:text-green-300 transition`}
+            className={`text-sm font-medium transition-colors ${
+              location.pathname === "/"
+                ? "text-green-400 drop-shadow-glow"
+                : "text-gray-300 hover:text-green-300"
+            }`}
           >
             Home
           </Link>
 
+          {/* Create Button */}
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
             onClick={onCreateClick}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm rounded-full hover:bg-green-700 transition"
+            className="flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-green-600 to-emerald-500 text-white text-sm font-semibold shadow-lg hover:shadow-green-500/30 transition"
           >
             <Plus size={16} />
             Create
           </motion.button>
 
+          {/* Wallet Section */}
           {account ? (
             <>
-              <span className="bg-green-700 text-white px-3 py-1 rounded-full text-xs font-mono tracking-wide">
+              <span className="bg-gradient-to-r from-green-700 to-emerald-600 text-white px-3 py-1 rounded-full text-xs font-mono tracking-wide shadow-sm">
                 {account.slice(0, 6)}...{account.slice(-4)}
               </span>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={disconnectWallet}
-                className="flex items-center gap-2 px-3 py-2 bg-red-600 text-white text-xs rounded-full hover:bg-red-700 transition"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-red-600 to-pink-600 text-white text-xs font-medium shadow hover:shadow-red-500/30 transition"
               >
                 <LogOut size={16} />
                 Disconnect
-              </button>
+              </motion.button>
             </>
           ) : (
             <motion.button
               whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.9 }}
               onClick={connectWallet}
-              className="relative flex items-center gap-2 overflow-hidden px-6 py-2 rounded-full bg-blue-600 text-white text-sm font-semibold transition-all duration-300 hover:bg-blue-700 focus:outline-none"
+              className="flex items-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold shadow-md hover:shadow-blue-500/30 transition"
             >
               <LogIn size={18} />
               Connect Wallet
@@ -76,9 +89,9 @@ const Navbar: React.FC<{ onCreateClick: () => void }> = ({ onCreateClick }) => {
         {/* Hamburger (Mobile) */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden text-green-400"
+          className="md:hidden text-green-400 hover:scale-110 transition"
         >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          {menuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </motion.nav>
 
@@ -89,13 +102,13 @@ const Navbar: React.FC<{ onCreateClick: () => void }> = ({ onCreateClick }) => {
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            transition={{ duration: 0.3 }}
-            className="fixed top-0 right-0 w-64 h-full bg-black shadow-xl z-40 pt-20 px-6 space-y-6 md:hidden"
+            transition={{ duration: 0.35, ease: "easeInOut" }}
+            className="fixed top-0 right-0 w-72 h-full bg-gradient-to-b from-black via-gray-900 to-black shadow-2xl z-40 pt-20 px-6 space-y-6 md:hidden border-l border-green-500/20"
           >
             <Link
               to="/"
               onClick={() => setMenuOpen(false)}
-              className="block text-gray-200 hover:text-green-300 text-sm font-medium"
+              className="block text-gray-200 hover:text-green-300 text-base font-medium"
             >
               Home
             </Link>
@@ -105,7 +118,7 @@ const Navbar: React.FC<{ onCreateClick: () => void }> = ({ onCreateClick }) => {
                 onCreateClick();
                 setMenuOpen(false);
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm rounded-full hover:bg-green-700 transition"
+              className="flex items-center gap-2 px-4 py-2 w-full rounded-lg bg-gradient-to-r from-green-600 to-emerald-500 text-white text-sm font-medium shadow hover:shadow-green-500/30 transition"
             >
               <Plus size={16} />
               Create
@@ -113,7 +126,7 @@ const Navbar: React.FC<{ onCreateClick: () => void }> = ({ onCreateClick }) => {
 
             {account ? (
               <>
-                <div className="bg-green-700 text-white px-3 py-1 rounded-full text-xs font-mono tracking-wide">
+                <div className="bg-gradient-to-r from-green-700 to-emerald-600 text-white px-3 py-1 rounded-full text-xs font-mono tracking-wide shadow">
                   {account.slice(0, 6)}...{account.slice(-4)}
                 </div>
                 <button
@@ -121,7 +134,7 @@ const Navbar: React.FC<{ onCreateClick: () => void }> = ({ onCreateClick }) => {
                     disconnectWallet();
                     setMenuOpen(false);
                   }}
-                  className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-xs rounded-full hover:bg-red-700 transition"
+                  className="flex items-center gap-2 px-4 py-2 w-full rounded-lg bg-gradient-to-r from-red-600 to-pink-600 text-white text-xs font-medium shadow hover:shadow-red-500/30 transition"
                 >
                   <LogOut size={16} />
                   Disconnect
@@ -133,7 +146,7 @@ const Navbar: React.FC<{ onCreateClick: () => void }> = ({ onCreateClick }) => {
                   connectWallet();
                   setMenuOpen(false);
                 }}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-full hover:bg-blue-700 transition"
+                className="flex items-center gap-2 px-4 py-2 w-full rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium shadow hover:shadow-blue-500/30 transition"
               >
                 <LogIn size={18} />
                 Connect Wallet
