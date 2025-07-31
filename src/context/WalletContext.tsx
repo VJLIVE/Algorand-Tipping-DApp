@@ -3,51 +3,51 @@ import { PeraWalletConnect } from "@perawallet/connect";
 
 type WalletContextType = {
   account: string | null;
+  peraWallet: PeraWalletConnect;
   connectWallet: () => Promise<void>;
   disconnectWallet: () => void;
 };
 
 const WalletContext = createContext<WalletContextType | null>(null);
 
+// Create ONE global instance
 const peraWallet = new PeraWalletConnect();
 
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [account, setAccount] = useState<string | null>(null);
 
-  // Try reconnecting on page load
   useEffect(() => {
+    // Reconnect existing session
     peraWallet.reconnectSession().then((accounts) => {
       if (accounts.length > 0) {
         setAccount(accounts[0]);
       }
     });
 
-    // Disconnect handler (if user disconnects in Pera app)
+    // Handle disconnects from the Pera app
     peraWallet.connector?.on("disconnect", () => {
       setAccount(null);
     });
   }, []);
 
-  // Connect to wallet
   const connectWallet = async () => {
     try {
       const accounts = await peraWallet.connect();
       if (accounts.length > 0) {
         setAccount(accounts[0]);
       }
-    } catch (error) {
-      console.error("Wallet connection failed:", error);
+    } catch (err) {
+      console.error("Wallet connection failed:", err);
     }
   };
 
-  // Disconnect wallet
   const disconnectWallet = () => {
     peraWallet.disconnect();
     setAccount(null);
   };
 
   return (
-    <WalletContext.Provider value={{ account, connectWallet, disconnectWallet }}>
+    <WalletContext.Provider value={{ account, peraWallet, connectWallet, disconnectWallet }}>
       {children}
     </WalletContext.Provider>
   );

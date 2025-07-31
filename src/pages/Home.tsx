@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
+import { fetchFundraisers } from "../utils/algorand";
 import CreatePost from "./CreatePost";
 import { useWallet } from "../context/WalletContext";
 
 type Post = {
-  id: number;
   title: string;
   description: string;
   image: string;
@@ -13,41 +13,38 @@ type Post = {
 
 const Home: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [showForm, setShowForm] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
   const { account } = useWallet();
 
-  const handleAddPost = (post: Post) => {
-    setPosts((prev) => [post, ...prev]); // add to top of feed
+  const loadPosts = async () => {
+    const data = await fetchFundraisers();
+    setPosts(data as Post[]);
   };
+
+  useEffect(() => {
+    loadPosts();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      {/* Create Post Button */}
-      <div className="p-4">
-        <button
-          onClick={() => setShowForm(true)}
-          className="px-4 py-2 bg-green-500 text-white rounded-lg shadow"
-        >
-          + Create Post
-        </button>
+      <div className="p-4 flex justify-end">
+        {account && (
+          <button
+            onClick={() => setShowCreate(true)}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg shadow"
+          >
+            + New Fundraiser
+          </button>
+        )}
       </div>
-
-      {/* Show CreatePost Modal */}
-      {showForm && account && (
-        <CreatePost
-          onAddPost={handleAddPost}
-          creator={account}
-          onClose={() => setShowForm(false)}
-        />
-      )}
 
       {/* Posts Grid */}
       <main className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {posts.map((post) => (
+        {posts.map((post, idx) => (
           <div
-            key={post.id}
+            key={idx}
             className="bg-white rounded-lg shadow hover:shadow-lg transition"
           >
             <img
@@ -60,6 +57,9 @@ const Home: React.FC = () => {
                 {post.title}
               </h2>
               <p className="text-gray-600 text-sm mt-2">{post.description}</p>
+              <p className="text-xs text-gray-400 mt-2">
+                by {post.creator.slice(0, 6)}...{post.creator.slice(-4)}
+              </p>
               <button className="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg">
                 Contribute
               </button>
@@ -67,6 +67,15 @@ const Home: React.FC = () => {
           </div>
         ))}
       </main>
+
+      {showCreate && (
+        <CreatePost
+          onClose={() => {
+            setShowCreate(false);
+            loadPosts(); // refresh after creating
+          }}
+        />
+      )}
     </div>
   );
 };
